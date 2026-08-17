@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MADDY — maddy.co</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0E12;
+    --bg-raised: #10151B;
+    --line: #1E2530;
+    --text: #EDEFF2;
+    --text-dim: #8A93A3;
+    --pink: #FF3B7C;
+    --cyan: #33E1D6;
+    --amber: #FFB84D;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Space Grotesk', sans-serif;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--pink); color:#0A0E12;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+
+  /* scanline overlay */
+  .scanlines{
+    position:fixed; inset:0; pointer-events:none; z-index:50;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.02) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    opacity:0.5;
+  }
+
+  /* nav */
+  nav{
+    position:sticky; top:0; z-index:40;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 32px;
+    background:rgba(10,14,18,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo-mark{
+    font-family:'Press Start 2P', monospace;
+    font-size:14px;
+    letter-spacing:1px;
+    color:var(--text);
+  }
+  .logo-mark span{color:var(--pink);}
+  .nav-links{display:flex; gap:32px; font-size:14px; color:var(--text-dim);}
+  .nav-links a:hover{color:var(--cyan);}
+  .nav-cta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    padding:9px 16px;
+    border:1px solid var(--pink);
+    color:var(--pink);
+    border-radius:2px;
+    transition:all .15s ease;
+  }
+  .nav-cta:hover{background:var(--pink); color:#0A0E12;}
+  @media(max-width:720px){ .nav-links{display:none;} }
+
+  /* hero */
+  .hero{
+    position:relative;
+    padding:120px 32px 80px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,59,124,0.14), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 100%, rgba(51,225,214,0.08), transparent 70%);
+  }
+  .live-pill{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; letter-spacing:1px;
+    color:var(--amber);
+    border:1px solid rgba(255,184,77,0.35);
+    background:rgba(255,184,77,0.06);
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:36px;
+  }
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--amber); animation:blink 1.4s infinite;}
+  @keyframes blink{0%,100%{opacity:1;} 50%{opacity:0.25;}}
+  .wordmark{
+    font-family:'Press Start 2P', monospace;
+    font-size:clamp(48px, 11vw, 118px);
+    line-height:1.05;
+    letter-spacing:2px;
+    position:relative;
+    display:inline-block;
+    color:var(--text);
+  }
+  .wordmark .glitch-b{
+    position:absolute; inset:0; color:var(--pink);
+    clip-path:inset(0 0 88% 0);
+    animation:glitchTop 5s infinite steps(1);
+  }
+  .wordmark .glitch-c{
+    position:absolute; inset:0; color:var(--cyan);
+    clip-path:inset(80% 0 0 0);
+    animation:glitchBot 5s infinite steps(1);
+  }
+  @keyframes glitchTop{
+    0%,92%{transform:translate(0,0); opacity:0;}
+    93%{transform:translate(-3px,-1px); opacity:0.85;}
+    95%{transform:translate(2px,1px); opacity:0.85;}
+    97%{opacity:0;}
+    100%{opacity:0;}
+  }
+  @keyframes glitchBot{
+    0%,90%{transform:translate(0,0); opacity:0;}
+    91%{transform:translate(3px,1px); opacity:0.8;}
+    94%{transform:translate(-2px,-1px); opacity:0.8;}
+    96%{opacity:0;}
+    100%{opacity:0;}
+  }
+  .tagline{
+    margin-top:28px;
+    font-size:clamp(16px,2.4vw,20px);
+    color:var(--text-dim);
+    max-width:520px;
+    margin-left:auto; margin-right:auto;
+  }
+  .hero-actions{
+    margin-top:40px;
+    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+  }
+  .btn-primary{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:500; font-size:14px;
+    background:var(--pink); color:#0A0E12;
+    padding:14px 28px;
+    border-radius:2px;
+    transition:transform .15s ease;
+  }
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-ghost{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    padding:14px 28px;
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:2px;
+    transition:border-color .15s ease;
+  }
+  .btn-ghost:hover{border-color:var(--cyan); color:var(--cyan);}
+
+  /* HUD ticker - signature element */
+  .hud{
+    max-width:880px;
+    margin:64px auto 0;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    background:var(--bg-raised);
+  }
+  .hud-cell{
+    padding:18px 12px;
+    text-align:center;
+    border-right:1px solid var(--line);
+  }
+  .hud-cell:last-child{border-right:none;}
+  .hud-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:1.5px;
+    color:var(--text-dim); text-transform:uppercase;
+  }
+  .hud-value{
+    font-family:'JetBrains Mono', monospace;
+    font-size:22px; font-weight:700;
+    margin-top:6px;
+    color:var(--cyan);
+  }
+  @media(max-width:640px){
+    .hud{grid-template-columns:repeat(2,1fr);}
+    .hud-cell:nth-child(2){border-right:none;}
+  }
+
+  /* section shell */
+  section{padding:96px 32px; border-bottom:1px solid var(--line);}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--pink);
+    margin-bottom:14px;
+  }
+  h2{
+    font-size:clamp(28px,4vw,42px);
+    font-weight:700;
+    max-width:640px;
+  }
+  .section-head{max-width:1180px; margin:0 auto 48px;}
+
+  /* about */
+  .about-grid{
+    max-width:1180px; margin:0 auto;
+    display:grid; grid-template-columns:1fr 1.1fr; gap:64px; align-items:start;
+  }
+  .about-body p{
+    color:var(--text-dim); font-size:16px; line-height:1.75; margin-bottom:18px; max-width:520px;
+  }
+  .about-body strong{color:var(--text); font-weight:500;}
+  .stat-strip{display:flex; gap:36px; margin-top:32px; flex-wrap:wrap;}
+  .stat-strip div{font-family:'JetBrains Mono', monospace;}
+  .stat-strip .num{font-size:26px; color:var(--amber); font-weight:700;}
+  .stat-strip .lbl{font-size:11px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase;}
+  .avatar-frame{
+    aspect-ratio:4/5;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:
+      linear-gradient(160deg, rgba(255,59,124,0.16), rgba(51,225,214,0.10)),
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 6px);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .avatar-frame::before{
+    content:'M';
+    font-family:'Press Start 2P', monospace;
+    font-size:96px;
+    color:rgba(237,239,242,0.08);
+  }
+  .avatar-tag{
+    position:absolute; bottom:16px; left:16px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; color:var(--text-dim);
+    background:rgba(10,14,18,0.7);
+    padding:6px 10px; border-radius:2px;
+    border:1px solid var(--line);
+  }
+  @media(max-width:860px){ .about-grid{grid-template-columns:1fr;} .about-grid{gap:40px;} .avatar-frame{max-width:320px;} }
+
+  /* content grid */
+  .content-grid{
+    max-width:1180px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+  }
+  .vid-card{
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    background:var(--bg-raised);
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .vid-card:hover{border-color:var(--pink); transform:translateY(-4px);}
+  .vid-thumb{
+    aspect-ratio:16/9;
+    background:linear-gradient(135deg, rgba(255,59,124,0.18), rgba(51,225,214,0.12));
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .vid-thumb .play{
+    width:44px; height:44px; border-radius:50%;
+    border:1px solid rgba(237,239,242,0.4);
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; color:var(--text);
+  }
+  .vid-thumb .dur{
+    position:absolute; bottom:8px; right:8px;
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    background:rgba(10,14,18,0.75); padding:2px 6px; border-radius:2px;
+    color:var(--text-dim);
+  }
+  .vid-meta{padding:16px;}
+  .vid-tag{
+    font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:1px;
+    color:var(--cyan); text-transform:uppercase; margin-bottom:8px; display:block;
+  }
+  .vid-meta h3{font-size:16px; font-weight:500; line-height:1.4;}
+  .vid-meta p{font-size:13px; color:var(--text-dim); margin-top:6px;}
+  @media(max-width:860px){ .content-grid{grid-template-columns:1fr;} }
+
+  /* platforms */
+  .platform-grid{
+    max-width:1180px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(5,1fr); gap:14px;
+  }
+  .platform-card{
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:24px 16px;
+    text-align:center;
+    background:var(--bg-raised);
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .platform-card:hover{transform:translateY(-3px);}
+  .platform-card .p-icon{font-size:22px; margin-bottom:10px; display:block;}
+  .platform-card .p-name{font-weight:500; font-size:14px;}
+  .platform-card .p-handle{
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dim); margin-top:4px;
+  }
+  .platform-card.twitch:hover{border-color:#9146FF;}
+  .platform-card.youtube:hover{border-color:#FF3B3B;}
+  .platform-card.tiktok:hover{border-color:var(--cyan);}
+  .platform-card.x:hover{border-color:var(--text);}
+  .platform-card.discord:hover{border-color:#8A9CFF;}
+  @media(max-width:860px){ .platform-grid{grid-template-columns:repeat(2,1fr);} }
+
+  /* footer */
+  footer{
+    padding:56px 32px 40px;
+    text-align:center;
+  }
+  footer .wordmark-sm{
+    font-family:'Press Start 2P', monospace;
+    font-size:16px; color:var(--text-dim);
+    margin-bottom:16px;
+  }
+  footer .foot-links{
+    display:flex; gap:24px; justify-content:center; margin-bottom:24px; flex-wrap:wrap;
+    font-size:13px; color:var(--text-dim);
+  }
+  footer .foot-links a:hover{color:var(--cyan);}
+  footer .copy{
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:#4A5261;
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<nav>
+  <div class="logo-mark">MADDY<span>_</span></div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#content">Content</a>
+    <a href="#platforms">Platforms</a>
+  </div>
+  <a href="#platforms" class="nav-cta">WATCH LIVE</a>
+</nav>
+
+<header class="hero">
+  <div class="live-pill"><span class="dot"></span> ON AIR &middot; streaming tonight 8PM PKT</div>
+
+  <div class="wordmark">
+    MADDY
+    <span class="glitch-b" aria-hidden="true">MADDY</span>
+    <span class="glitch-c" aria-hidden="true">MADDY</span>
+  </div>
+
+  <p class="tagline">Gaming, hardware teardowns, and way too many late-night patch notes. Come for the boss fight, stay for the build logs.</p>
+
+  <div class="hero-actions">
+    <a href="#platforms" class="btn-primary">Follow the channel</a>
+    <a href="#content" class="btn-ghost">Latest uploads</a>
+  </div>
+
+  <div class="hud">
+    <div class="hud-cell">
+      <div class="hud-label">Followers</div>
+      <div class="hud-value" id="stat-followers">128.4K</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">Hours streamed</div>
+      <div class="hud-value" id="stat-hours">2,140</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">Games cleared</div>
+      <div class="hud-value">61</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">Current uptime</div>
+      <div class="hud-value" id="stat-uptime">00:00:00</div>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="about-grid">
+    <div class="avatar-frame">
+      <span class="avatar-tag">cam.feed // maddy</span>
+    </div>
+    <div class="about-body">
+      <div class="eyebrow">Who's Maddy</div>
+      <h2 style="margin-bottom:20px;">Full-time streamer, part-time hardware nerd.</h2>
+      <p>I've spent the last few years living on stream — RPGs, roguelikes, the occasional rage-quit — and taking apart every piece of tech that crosses my desk to see what's actually inside it.</p>
+      <p><strong>MADDY</strong> is the home base for all of it: streams, teardown videos, and the builds I put together between them. New here? Start with whatever's live right now.</p>
+      <div class="stat-strip">
+        <div><div class="num">4x</div><div class="lbl">week stream sched</div></div>
+        <div><div class="num">300+</div><div class="lbl">videos uploaded</div></div>
+        <div><div class="num">2019</div><div class="lbl">started streaming</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="content">
+  <div class="section-head">
+    <div class="eyebrow">Latest uploads</div>
+    <h2>Fresh off the render queue.</h2>
+  </div>
+  <div class="content-grid">
+    <div class="vid-card">
+      <div class="vid-thumb"><div class="play">&#9654;</div><span class="dur">18:42</span></div>
+      <div class="vid-meta">
+        <span class="vid-tag">Teardown</span>
+        <h3>I opened a $4,000 graphics card and regretted it</h3>
+        <p>212K views &middot; 3 days ago</p>
+      </div>
+    </div>
+    <div class="vid-card">
+      <div class="vid-thumb"><div class="play">&#9654;</div><span class="dur">41:07</span></div>
+      <div class="vid-meta">
+        <span class="vid-tag">VOD highlight</span>
+        <h3>The final boss fight nobody warned me about</h3>
+        <p>96K views &middot; 6 days ago</p>
+      </div>
+    </div>
+    <div class="vid-card">
+      <div class="vid-thumb"><div class="play">&#9654;</div><span class="dur">12:55</span></div>
+      <div class="vid-meta">
+        <span class="vid-tag">Build log</span>
+        <h3>Building the quietest PC I've ever owned</h3>
+        <p>184K views &middot; 1 week ago</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="platforms">
+  <div class="section-head">
+    <div class="eyebrow">Find me everywhere</div>
+    <h2>Pick your platform.</h2>
+  </div>
+  <div class="platform-grid">
+    <a class="platform-card twitch" href="#">
+      <span class="p-icon">&#9635;</span>
+      <div class="p-name">Twitch</div>
+      <div class="p-handle">@maddy</div>
+    </a>
+    <a class="platform-card youtube" href="#">
+      <span class="p-icon">&#9654;</span>
+      <div class="p-name">YouTube</div>
+      <div class="p-handle">@maddyplays</div>
+    </a>
+    <a class="platform-card tiktok" href="#">
+      <span class="p-icon">&#9835;</span>
+      <div class="p-name">TikTok</div>
+      <div class="p-handle">@maddy</div>
+    </a>
+    <a class="platform-card x" href="#">
+      <span class="p-icon">&#10005;</span>
+      <div class="p-name">X</div>
+      <div class="p-handle">@maddy</div>
+    </a>
+    <a class="platform-card discord" href="#">
+      <span class="p-icon">&#9673;</span>
+      <div class="p-name">Discord</div>
+      <div class="p-handle">discord.gg/maddy</div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="wordmark-sm">MADDY</div>
+  <div class="foot-links">
+    <a href="#about">About</a>
+    <a href="#content">Content</a>
+    <a href="#platforms">Platforms</a>
+    <a href="mailto:hello@maddy.co">hello@maddy.co</a>
+  </div>
+  <div class="copy">maddy.co &middot; &copy; 2026 MADDY. All rights reserved.</div>
+</footer>
+
+<script>
+  // uptime ticker for the HUD signature element
+  var start = Date.now();
+  var uptimeEl = document.getElementById('stat-uptime');
+  function pad(n){ return n.toString().padStart(2,'0'); }
+  function tick(){
+    var diff = Math.floor((Date.now() - start) / 1000);
+    var h = Math.floor(diff / 3600);
+    var m = Math.floor((diff % 3600) / 60);
+    var s = diff % 60;
+    uptimeEl.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  setInterval(tick, 1000);
+  tick();
+
+  // gentle follower count creep
+  var followerEl = document.getElementById('stat-followers');
+  var base = 128400;
+  setInterval(function(){
+    base += Math.floor(Math.random()*3);
+    followerEl.textContent = (base/1000).toFixed(1) + 'K';
+  }, 4000);
+</script>
+
+</body>
+</html>
